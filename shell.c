@@ -40,58 +40,83 @@ int main(){
 
 
 
-void parseArgs(char *buffer, char** args, int argsSize, int *nargs) { //this is the code from the assignment, rewrite for extra credit
+// void parseArgs(char *buffer, char** args, int argsSize, int *nargs) { //this is the code from the assignment, rewrite for extra credit
+// // buffer is the input string of characters
+// // args is the output array of arguments.  It has already been created with argsSize slots.
+// // nargs as the number filled in that is passed back
+//     char* bufArgs[argsSize];
+//     char** charpointer;
+//     char* wbuf;
+//     int j;
+//     int done = 0;
+
+    
+//     wbuf=buffer; 
+    
+//     bufArgs[0]=buffer;
+    
+//     args[0]=buffer;
+    
+//     charpointer = bufArgs;
+    
+    
+//     // while(*charpointer != NULL && !done) {
+        
+//     //     char* temp = strsep(&wbuf, " \n\t");
+//     //     *charpointer = (char*) malloc(64*sizeof(char*)); //each token can only be 64 characters long, can change
+//     //     strcpy(*charpointer, temp);
+        
+//     //     charpointer++;
+//     //     if ((*charpointer != '\0') && (charpointer >= &(bufArgs[argsSize]))) {
+            
+//     //         done = 1;
+//     //     }
+//     // }
+    
+
+//     for(charpointer=bufArgs; (*charpointer=strsep(&wbuf, " \n\t")) != NULL ;){ //this is disgusting
+//         if ((*charpointer != '\0') && (++charpointer >= &bufArgs[argsSize]))
+//             break;
+//     }
+
+//     j = 0;
+//     for (int i = 0; bufArgs[i]!=NULL; i++){
+//         if(strlen(bufArgs[i])>0) {
+//             args[j++]=bufArgs[i];
+//         }
+//     }
+
+//     // Add the NULL as the end argument because we need that for later
+//     *nargs=j;
+//     args[j]=NULL;
+// }
+
 // buffer is the input string of characters
 // args is the output array of arguments.  It has already been created with argsSize slots.
 // nargs as the number filled in that is passed back
-    
-    char* bufArgs[argsSize];
-    
-    char** charpointer;
-    
-    char* wbuf;
-    int j;
-    int done = 0;
+void parseArgs(char *buffer, char** args, int argsSize, int *nargs) {
+  char *bufArgs[argsSize];
+  char **cp;
+  char *wbuf;
+  int i, j;
 
-    
-    wbuf=buffer; 
-    
-    bufArgs[0]=buffer;
-    
-    args[0]=buffer;
-    
-    charpointer = bufArgs;
-    
-    
-    // while(*charpointer != NULL && !done) {
-        
-    //     char* temp = strsep(&wbuf, " \n\t");
-    //     *charpointer = (char*) malloc(64*sizeof(char*)); //each token can only be 64 characters long, can change
-    //     strcpy(*charpointer, temp);
-        
-    //     charpointer++;
-    //     if ((*charpointer != '\0') && (charpointer >= &(bufArgs[argsSize]))) {
-            
-    //         done = 1;
-    //     }
-    // }
-    
+  wbuf=buffer;
+  bufArgs[0]=buffer;
+  args[0]=buffer;
 
-    for(charpointer=bufArgs; (*charpointer=strsep(&wbuf, " \n\t")) != NULL ;){ //this is disgusting
-        if ((*charpointer != '\0') && (++charpointer >= &bufArgs[argsSize]))
-            break;
-    }
+  for(cp=bufArgs; (*cp=strsep(&wbuf, " \n\t")) != NULL ;){
+    if ((*cp != '\0') && (++cp >= &bufArgs[argsSize]))
+      break;
+  }
 
-    j = 0;
-    for (int i = 0; bufArgs[i]!=NULL; i++){
-        if(strlen(bufArgs[i])>0) {
-            args[j++]=bufArgs[i];
-        }
-    }
+  for (j=i=0; bufArgs[i]!=NULL; i++){
+    if(strlen(bufArgs[i])>0)
+      args[j++]=bufArgs[i];
+  }
 
-    // Add the NULL as the end argument because we need that for later
-    *nargs=j;
-    args[j]=NULL;
+  // Add the NULL as the end argument because we need that for later
+  *nargs=j;
+  args[j]=NULL;
 }
 
 
