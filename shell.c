@@ -29,8 +29,8 @@ int main(){
         
 
         //I tried to get this to work but couldnt figure it out, If you can get it done before you leave tomorrow thatd be dope
-        //parseArgs(input, tokens, maxTokens, nTokens);
-        //printf("%s", tokens[0]);
+        parseArgs(input, tokens, maxTokens, nTokens);
+        printf("%s", tokens[0]);
         
     }
 }
