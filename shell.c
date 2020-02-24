@@ -8,7 +8,7 @@
 
 int main(){
     int done = 0;
-    int nTokens = 1;
+    
     while (!done) { //program run loop, need to set up exit commands until then use keyboard interrupt to exit
         int count = 1;
         char* cwd = (char*) malloc(count * sizeof(char));
@@ -25,29 +25,29 @@ int main(){
         printf("%s", input); // this just prints out what ^ read. once commands are working only print this if the input doesnt match a command
         int maxTokens = 5; //maximum number of tokens (i.e. "mv -v ~ /" is 4 tokens"). five is probably enough but we can adjust if needed
         char** tokens = (char**) malloc((maxTokens)*sizeof(char*));
+        int nTokens = 1;
         
         for(int i = 0; i < maxTokens; i++) {
             tokens[i] = (char*)malloc(64*sizeof(char));
         }
         
-        //I'm just assuming you get this to work, please don't make me write the entire project again
         parseArgs(input, tokens, maxTokens, &nTokens);
-        printf("%s", tokens[0]);
+        //printf("%s", tokens[0]);
 
 
-        if (strcmp(tokens[0],"exit\0 \n") == 0) {
+        if (strcmp(tokens[0],"exit\0") == 0) {
             exit(0);
         } else if (strcmp(tokens[0], "cd\0") == 0) {
             if(chdir(tokens[1])!= 0) {
-                printf("'%s' is not a valid directory", tokens[1]);
+                printf("'%s' is not a valid directory \n", tokens[1]);
             }
             nTokens++;
         } else {
             printf("\"");
             for (int i = 0; i < nTokens; i++) {
-                printf("%s ", tokens[i]);
+                printf("\"%s", tokens[i]);
             }
-            printf("\" is not a valid command");
+            printf("\" is not a valid command \n");
         }
 
     }
