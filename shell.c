@@ -8,6 +8,7 @@
 
 int main(){
     int done = 0;
+    int nTokens = 1;
     while (!done) { //program run loop, need to set up exit commands until then use keyboard interrupt to exit
         int count = 1;
         char* cwd = (char*) malloc(count * sizeof(char));
@@ -18,29 +19,29 @@ int main(){
         }
 
         printf("%s> ", cwd);
-        int length = (count * 2) + 32; //this is arbitratry but I dont think it needs to be any bigger. If steve says otherwise can change
+        int length = (count * 2) + 32; //this is arbitratry but I dont think it needs to be any bigger. If steve says otherwise can change]
         char* input = (char*) malloc(length * sizeof(char));
         fgets(input, length + 1, stdin); //array is now formatted like "what was typed but always terminated with \n" followed by \0 until the array is full
         printf("%s", input); // this just prints out what ^ read. once commands are working only print this if the input doesnt match a command
-        int* nTokens;
         int maxTokens = 5; //maximum number of tokens (i.e. "mv -v ~ /" is 4 tokens"). five is probably enough but we can adjust if needed
-        char** tokens = (char**)malloc(maxTokens*sizeof(char*));
+        char** tokens = (char**) malloc((maxTokens)*sizeof(char*));
+        
         for(int i = 0; i < maxTokens; i++) {
             tokens[i] = (char*)malloc(64*sizeof(char));
         }
         
-
         //I'm just assuming you get this to work, please don't make me write the entire project again
-        parseArgs(input, tokens, maxTokens, nTokens);
+        parseArgs(input, tokens, maxTokens, &nTokens);
         printf("%s", tokens[0]);
 
 
-        if (strcmp(tokens[0],"exit\0") == 0) {
+        if (strcmp(tokens[0],"exit\0 \n") == 0) {
             exit(0);
         } else if (strcmp(tokens[0], "cd\0") == 0) {
             if(chdir(tokens[1])!= 0) {
                 printf("'%s' is not a valid directory", tokens[1]);
             }
+            nTokens++;
         } else {
             printf("\"");
             for (int i = 0; i < nTokens; i++) {
@@ -49,7 +50,6 @@ int main(){
             printf("\" is not a valid command");
         }
 
-        
     }
 }
 
@@ -84,7 +84,7 @@ void parseArgs(char *buffer, char** args, int argsSize, int *nargs) {
 }
 
 
-void tokenize(){ // put the rewritten version of parseArgs here
+void tokenize(char *input, char** tokens, int maxTokens, int *nTokens){ // put the rewritten version of parseArgs here
 
 
 }
