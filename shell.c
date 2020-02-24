@@ -22,7 +22,7 @@ int main(){
         int length = (count * 2) + 32; //this is arbitratry but I dont think it needs to be any bigger. If steve says otherwise can change]
         char* input = (char*) malloc(length * sizeof(char));
         fgets(input, length + 1, stdin); //array is now formatted like "what was typed but always terminated with \n" followed by \0 until the array is full
-        printf("%s", input); // this just prints out what ^ read. once commands are working only print this if the input doesnt match a command
+        //printf("%s", input); // this just prints out what ^ read. once commands are working only print this if the input doesnt match a command
         int maxTokens = 5; //maximum number of tokens (i.e. "mv -v ~ /" is 4 tokens"). five is probably enough but we can adjust if needed
         char** tokens = (char**) malloc((maxTokens)*sizeof(char*));
         int nTokens = 1;
@@ -45,7 +45,7 @@ int main(){
         } else {
             printf("\"");
             for (int i = 0; i < nTokens; i++) {
-                printf("\"%s", tokens[i]);
+                printf("%s", tokens[i]);
             }
             printf("\" is not a valid command \n");
         }
