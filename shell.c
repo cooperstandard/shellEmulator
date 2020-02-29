@@ -37,7 +37,7 @@ int main(){
         parseArgs(input, tokens, maxTokens, &nTokens);
         if (strcmp(tokens[nTokens - 1], "&\0") == 0) {
             background = 1;
-            nTokens--; //don't want to pass the & as an arguement
+            strcpy(tokens[nTokens - 1], "\0"); //don't want to pass the & as an arguement
         } else  {
             background = 0;
         }
@@ -88,8 +88,8 @@ void executeProgBackground(char* name, char** args){
     if(pid!= 0){ //parent
         //while(wait(&status) != pid);
         waitpid(pid, &status, WNOHANG);
-        signal(SIGCHLD, childHandler);
-
+        //signal(SIGCHLD, childHandler);
+        signal(SIGCHLD, SIG_IGN);
         //sleep(10);
 
     } else {  //child
