@@ -63,14 +63,14 @@ void executeProg(char* name, char** args){
     int status;
     int pid = fork();
 
-    if(pid!= 0){ //parent
+    if(pid != 0){ //parent
         
         while(wait(&status) != pid);
         //waitpid(pid, &status, 0); //blocking
        // sleep(10);
     } else {  //child
         execvp(args[0], args);
-        exit(0);
+        //exit(0);
     }
 }
 
@@ -82,12 +82,12 @@ void executeProgBackground(char* name, char** args){
     if(pid!= 0){ //parent
         //while(wait(&status) != pid);
         //waitpid(pid, &status, WNOHANG);
-        
+
         //sleep(10);
 
     } else {  //child
         execvp(args[0], args);
-        exit(0);
+        //exit(0);
     }
 }
 
