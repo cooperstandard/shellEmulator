@@ -80,24 +80,26 @@ int executeProg(char* name, char** args){ //done fixed, now to make the backgrou
 }
 
 void executeProgBackground(char* name, char** args){
-    printf("%s %s\n", name, args[1]); 
+    //printf("%s %s\n", name, args[1]); 
     int status;
     int pid = fork();
-    
+   //execvp(args[0], args);
 
     if(pid!= 0){ //parent
-        //while(wait(&status) != pid);
-        waitpid(pid, &status, WNOHANG);
-        //signal(SIGCHLD, childHandler);
-        //signal(SIGCHLD, SIG_IGN);
-        //sleep(10);
+         //while(wait(&status) != pid);
+         //waitpid(pid, &status, WNOHANG);
+         //signal(SIGCHLD, childHandler);
+         //signal(SIGCHLD, SIG_IGN);
+         //sleep(10);
+         pid = waitpid(pid, &status, WUNTRACED);
+         printf("waited\n");
 
     } else {  //child
-        execvp(args[0], args);
-        printf("invalid command\n");
-        exit(0);
-        //kill(pid, SIGINT);
-        //exit(0);
+         execvp(args[0], args);
+         printf("invalid command\n");
+         exit(0);
+         //kill(pid, SIGINT);
+         //exit(0);
     }
 }
 
