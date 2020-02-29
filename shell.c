@@ -80,6 +80,7 @@ int executeProg(char* name, char** args){ //done fixed, now to make the backgrou
 }
 
 void executeProgBackground(char* name, char** args){
+    printf("background\n");
     int status;
     int pid = fork();
     
@@ -87,12 +88,13 @@ void executeProgBackground(char* name, char** args){
     if(pid!= 0){ //parent
         //while(wait(&status) != pid);
         waitpid(pid, &status, WNOHANG);
-        
+        signal(SIGCHLD, childHandler);
 
         //sleep(10);
 
     } else {  //child
         execvp(args[0], args);
+        
         //kill(pid, SIGINT);
         //exit(0);
     }
@@ -136,7 +138,7 @@ void tokenize(char *input, char** tokens, int maxTokens, int *nTokens){ // put t
 }
 
 void childHandler(pid_t pid) {
-
+    wait(NULL);
 
 }
 
