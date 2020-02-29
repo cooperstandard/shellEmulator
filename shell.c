@@ -80,7 +80,7 @@ int executeProg(char* name, char** args){ //done fixed, now to make the backgrou
 }
 
 void executeProgBackground(char* name, char** args){
-    printf("%s %s\n", name, args[1]);
+    printf("%s %s\n", name, args[1]); 
     int status;
     int pid = fork();
     
@@ -88,7 +88,7 @@ void executeProgBackground(char* name, char** args){
     if(pid!= 0){ //parent
         //while(wait(&status) != pid);
         //waitpid(pid, &status, WNOHANG);
-        //signal(SIGCHLD, childHandler);
+        signal(SIGCHLD, childHandler);
         //signal(SIGCHLD, SIG_IGN);
         //sleep(10);
 
