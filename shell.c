@@ -80,7 +80,7 @@ int executeProg(char* name, char** args){ //done fixed, now to make the backgrou
 }
 
 void executeProgBackground(char* name, char** args){
-    printf("background\n");
+    printf("%s %s\n", name, args[1]);
     int status;
     int pid = fork();
     
