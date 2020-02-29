@@ -43,7 +43,7 @@ int main(){
             if(chdir(tokens[1])!= 0) {
                 printf("'%s' is not a valid directory \n", tokens[1]);
             } 
-        } else if (strcmp(tokens[nTokens - 1], '&\0') != 0) {
+        } else if (strcmp(tokens[nTokens - 1], "&\0") != 0) {
              if(executeProg(tokens[0], tokens) < 0) {
                  printf("\"%s\" is not a valid command\n", tokens[0]);
              }
@@ -92,7 +92,7 @@ int executeProgBackground(char* name, char** args){
        
         args[0] = name;
         rc =  execvp(args[0], args);
-        
+
 
         }
     return rc;
