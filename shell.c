@@ -70,6 +70,10 @@ int executeProg(char* name, char** args){
     return rc;
 }
 
+void redirection(){
+
+
+}
 
 
 
@@ -98,6 +102,8 @@ void parseArgs(char *buffer, char** args, int argsSize, int *nargs) {
 
   // Add the NULL as the end argument because we need that for later
   *nargs=j;
+
+  //note
   args[j]=NULL;
 }
 
