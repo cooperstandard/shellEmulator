@@ -59,7 +59,7 @@ int main(){
     }   
 }
 
-int executeProg(char* name, char** args){
+int executeProg(char* name, char** args){ //done fixed, now to make the background boy work
     int status;
     int pid = fork();
     int rc;
@@ -74,8 +74,7 @@ int executeProg(char* name, char** args){
        
         args[0] = name;
         rc =  execvp(args[0], args);
-        printf("test");
-        kill(pid, SIGINT);
+        
     }
     return rc;
 }
@@ -87,12 +86,14 @@ void executeProgBackground(char* name, char** args){
 
     if(pid!= 0){ //parent
         //while(wait(&status) != pid);
-        //waitpid(pid, &status, WNOHANG);
+        waitpid(pid, &status, WNOHANG);
+        
 
         //sleep(10);
 
     } else {  //child
         execvp(args[0], args);
+        //kill(pid, SIGINT);
         //exit(0);
     }
 }
