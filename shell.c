@@ -87,9 +87,9 @@ void executeProgBackground(char* name, char** args){
 
     if(pid!= 0){ //parent
         //while(wait(&status) != pid);
-        waitpid(pid, &status, WNOHANG);
+        //waitpid(pid, &status, WNOHANG);
         //signal(SIGCHLD, childHandler);
-        signal(SIGCHLD, SIG_IGN);
+        //signal(SIGCHLD, SIG_IGN);
         //sleep(10);
 
     } else {  //child
