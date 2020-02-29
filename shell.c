@@ -68,7 +68,7 @@ int executeProg(char* name, char** args){
         
         while(wait(&status) != pid);
         //pid_t result =  waitpid(pid, &status, 0); //blocking
-
+        kill(pid, 3);
        // sleep(10);
     } else {  //child
        
