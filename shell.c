@@ -4,6 +4,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <signal.h>
 #include "shell.h"
 
 
@@ -41,10 +42,15 @@ int main(){
         } else if (strcmp(tokens[0], "cd\0") == 0) {
             if(chdir(tokens[1])!= 0) {
                 printf("'%s' is not a valid directory \n", tokens[1]);
-            }
-            nTokens++;
+            } 
+        } else if (strcmp(tokens[nTokens - 1], '&\0') != 0) {
+             if(executeProg(tokens[0], tokens) < 0) {
+                 printf("\"%s\" is not a valid command\n", tokens[0]);
+             }
         } else {
-             executeProg(tokens[0], tokens);
+            if(executeProgBackground(tokens[0], tokens) < 0) {
+                 printf("\"%s\" is not a valid command\n", tokens[0]);
+             }
         }
         
     }   
@@ -58,13 +64,35 @@ int executeProg(char* name, char** args){
         if(pid!= 0){ //parent
         
         while(wait(&status) != pid);
-        //pid_t result =  waitpid(pid, &status, 0); //blocking
+        pid_t result =  waitpid(pid, &status, 0); //blocking
 
        // sleep(10);
         } else {  //child
        
         args[0] = name;
         rc =  execvp(args[0], args);
+
+        }
+    return rc;
+}
+
+int executeProgBackground(char* name, char** args){
+    int status;
+    signal(SIGCHLD, SIG_IGN); //reap zombies automatically I think
+    int pid = fork();
+    int rc;
+
+        if(pid!= 0){ //parent
+        
+        //while(wait(&status) != pid);
+        pid_t result =  waitpid(pid, &status, WNOHANG); //blocking
+
+       // sleep(10);
+        } else {  //child
+       
+        args[0] = name;
+        rc =  execvp(args[0], args);
+        
 
         }
     return rc;
