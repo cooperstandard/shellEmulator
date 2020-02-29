@@ -10,7 +10,7 @@
 
 int main(){
     int done = 0;
-    
+    signal(SIGCHLD, SIG_IGN); //reap zombies automatically I think
     while (!done) { //program run loop, need to set up exit commands until then use keyboard interrupt to exit
         int count = 1;
         char* cwd = (char*) malloc(count * sizeof(char));
@@ -65,8 +65,8 @@ void executeProg(char* name, char** args){
 
     if(pid!= 0){ //parent
         
-        //while(wait(&status) != pid);
-        waitpid(pid, &status, 0); //blocking
+        while(wait(&status) != pid);
+        //waitpid(pid, &status, 0); //blocking
        // sleep(10);
     } else {  //child
         execvp(args[0], args);
@@ -76,14 +76,14 @@ void executeProg(char* name, char** args){
 
 void executeProgBackground(char* name, char** args){
     int status;
-    signal(SIGCHLD, SIG_IGN); //reap zombies automatically I think
     int pid = fork();
     
 
     if(pid!= 0){ //parent
         //while(wait(&status) != pid);
-        waitpid(pid, &status, WNOHANG); //blocking
-       // sleep(10);
+        //waitpid(pid, &status, WNOHANG);
+        
+        //sleep(10);
 
     } else {  //child
         execvp(args[0], args);
