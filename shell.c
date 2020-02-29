@@ -10,7 +10,7 @@
 
 int main(){
     int done = 0;
-    signal(SIGCHLD, SIG_IGN); //reap zombies automatically I think
+    //signal(SIGCHLD, SIG_IGN); //reap zombies automatically I think
     while (!done) { //program run loop, need to set up exit commands until then use keyboard interrupt to exit
         int count = 1;
         char* cwd = (char*) malloc(count * sizeof(char));
