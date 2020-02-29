@@ -69,11 +69,12 @@ int executeProg(char* name, char** args){
         while(wait(&status) != pid);
         //pid_t result =  waitpid(pid, &status, 0); //blocking
         //kill(pid, 3);
-       // sleep(10);
+        //sleep(10);
     } else {  //child
        
         args[0] = name;
         rc =  execvp(args[0], args);
+        printf("test");
         kill(pid, SIGINT);
     }
     return rc;
