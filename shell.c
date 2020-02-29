@@ -35,7 +35,7 @@ int main(){
 
         int background;
         parseArgs(input, tokens, maxTokens, &nTokens);
-        if (strcmp(tokens[nTokens - 1], "&\0") != 0) {
+        if (strcmp(tokens[nTokens - 1], "&\0") == 0) {
             background = 1;
             nTokens--; //don't want to pass the & as an arguement
         } else  {
@@ -50,7 +50,7 @@ int main(){
             if(chdir(tokens[1])!= 0) {
                 printf("'%s' is not a valid directory \n", tokens[1]);
             } 
-        } else if (strcmp(tokens[nTokens - 1], "&\0") != 0) {
+        } else if (!background) {
              executeProg(tokens[0], tokens);
         } else {
             executeProgBackground(tokens[0], tokens);
@@ -59,19 +59,24 @@ int main(){
     }   
 }
 
-void executeProg(char* name, char** args){
+int executeProg(char* name, char** args){
     int status;
     int pid = fork();
+    int rc;
 
-    if(pid != 0){ //parent
+    if(pid!= 0){ //parent
         
         while(wait(&status) != pid);
-        //waitpid(pid, &status, 0); //blocking
+        //pid_t result =  waitpid(pid, &status, 0); //blocking
+
        // sleep(10);
     } else {  //child
-        execvp(args[0], args);
-        //exit(0);
+       
+        args[0] = name;
+        rc =  execvp(args[0], args);
+
     }
+    return rc;
 }
 
 void executeProgBackground(char* name, char** args){
