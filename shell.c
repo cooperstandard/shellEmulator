@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/wait.h>
 #include "shell.h"
 
 
@@ -43,15 +44,32 @@ int main(){
             }
             nTokens++;
         } else {
-            printf("\"");
-            for (int i = 0; i < nTokens; i++) {
-                printf("%s", tokens[i]);
-            }
-            printf("\" is not a valid command \n");
+             executeProg(tokens[0], tokens);
         }
-
-    }
+        
+    }   
 }
+
+int executeProg(char* name, char** args){
+    int status;
+    int pid = fork();
+    int rc;
+
+        if(pid!= 0){ //parent
+        
+        while(wait(&status) != pid);
+        //pid_t result =  waitpid(pid, &status, 0); //blocking
+
+       // sleep(10);
+        } else {  //child
+       
+        args[0] = name;
+        rc =  execvp(args[0], args);
+
+        }
+    return rc;
+}
+
 
 
 
