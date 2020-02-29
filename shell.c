@@ -32,8 +32,15 @@ int main(){
         for(int i = 0; i < maxTokens; i++) {
             tokens[i] = (char*)malloc(64*sizeof(char));
         }
-        
+
+        int background;
         parseArgs(input, tokens, maxTokens, &nTokens);
+        if (strcmp(tokens[nTokens - 1], "&\0") != 0) {
+            background = 1;
+            nTokens--; //don't want to pass the & as an arguement
+        } else  {
+            background = 0;
+        }
         //printf("%s", tokens[0]);
 
 
@@ -44,58 +51,44 @@ int main(){
                 printf("'%s' is not a valid directory \n", tokens[1]);
             } 
         } else if (strcmp(tokens[nTokens - 1], "&\0") != 0) {
-             if(executeProg(tokens[0], tokens) < 0) {
-                 printf("\"%s\" is not a valid command\n", tokens[0]);
-             }
+             executeProg(tokens[0], tokens);
         } else {
-            if(executeProgBackground(tokens[0], tokens) < 0) {
-                 printf("\"%s\" is not a valid command\n", tokens[0]);
-             }
+            executeProgBackground(tokens[0], tokens);
         }
-        
+        //free all malloced things that we dont want to persist
     }   
 }
 
-int executeProg(char* name, char** args){
+void executeProg(char* name, char** args){
     int status;
     int pid = fork();
-    int rc;
 
-        if(pid!= 0){ //parent
+    if(pid!= 0){ //parent
         
-        while(wait(&status) != pid);
-        pid_t result =  waitpid(pid, &status, 0); //blocking
-
+        //while(wait(&status) != pid);
+        waitpid(pid, &status, 0); //blocking
        // sleep(10);
-        } else {  //child
-       
-        args[0] = name;
-        rc =  execvp(args[0], args);
-
-        }
-    return rc;
+    } else {  //child
+        execvp(args[0], args);
+        exit(0);
+    }
 }
 
-int executeProgBackground(char* name, char** args){
+void executeProgBackground(char* name, char** args){
     int status;
     signal(SIGCHLD, SIG_IGN); //reap zombies automatically I think
     int pid = fork();
-    int rc;
+    
 
-        if(pid!= 0){ //parent
-        
+    if(pid!= 0){ //parent
         //while(wait(&status) != pid);
-        pid_t result =  waitpid(pid, &status, WNOHANG); //blocking
-
+        waitpid(pid, &status, WNOHANG); //blocking
        // sleep(10);
-        } else {  //child
-       
-        args[0] = name;
-        rc =  execvp(args[0], args);
 
-
-        }
-    return rc;
+    } else {  //child
+        execvp(args[0], args);
+        exit(0);
+    }
 }
 
 
@@ -135,53 +128,8 @@ void tokenize(char *input, char** tokens, int maxTokens, int *nTokens){ // put t
 
 }
 
-// void parseArgs(char *buffer, char** args, int argsSize, int *nargs) { //this is the code from the assignment, rewrite for extra credit
-// // buffer is the input string of characters
-// // args is the output array of arguments.  It has already been created with argsSize slots.
-// // nargs as the number filled in that is passed back
-//     char* bufArgs[argsSize];
-//     char** charpointer;
-//     char* wbuf;
-//     int j;
-//     int done = 0;
+void childHandler(pid_t pid) {
 
-    
-//     wbuf=buffer; 
-    
-//     bufArgs[0]=buffer;
-    
-//     args[0]=buffer;
-    
-//     charpointer = bufArgs;
-    
-    
-//     // while(*charpointer != NULL && !done) {
-        
-//     //     char* temp = strsep(&wbuf, " \n\t");
-//     //     *charpointer = (char*) malloc(64*sizeof(char)); //each token can only be 64 characters long, can change
-//     //     strcpy(*charpointer, temp);
-        
-//     //     charpointer++;
-//     //     if ((*charpointer != '\0') && (charpointer >= &(bufArgs[argsSize]))) {
-            
-//     //         done = 1;
-//     //     }
-//     // }
-    
 
-//     for(charpointer=bufArgs; (*charpointer=strsep(&wbuf, " \n\t")) != NULL ;){ //this is disgusting
-//         if ((*charpointer != '\0') && (++charpointer >= &bufArgs[argsSize]))
-//             break;
-//     }
+}
 
-//     j = 0;
-//     for (int i = 0; bufArgs[i]!=NULL; i++){
-//         if(strlen(bufArgs[i])>0) {
-//             args[j++]=bufArgs[i];
-//         }
-//     }
-
-//     // Add the NULL as the end argument because we need that for later
-//     *nargs=j;
-//     args[j]=NULL;
-// }
