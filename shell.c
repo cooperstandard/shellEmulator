@@ -180,7 +180,7 @@ char** truncateN(char** input, int size, int n) {
     for(int i = 0; i < size; i++) {
         free(&(input[i]));
     }
-    free(&input);
+    //free(&input);
     return ret;
 }
 
