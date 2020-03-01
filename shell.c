@@ -21,6 +21,7 @@ int main(){
         }
 
         printf("%s> ", cwd);
+        fflush(stdout);
         int length = (count * 2) + 32; //this is arbitratry but I dont think it needs to be any bigger. If steve says otherwise can change]
         char* input = (char*) malloc(length * sizeof(char));
         fgets(input, length + 1, stdin); //array is now formatted like "what was typed but always terminated with \n" followed by \0 until the array is full
@@ -74,6 +75,7 @@ int executeProg(char* name, char** args){ //done fixed, now to make the backgrou
        
         args[0] = name;
         rc =  execvp(args[0], args);
+        exit(0);
         
     }
     return rc;
@@ -85,7 +87,7 @@ void executeProgBackground(char* name, char** args){
     int rc;
 
     if(pid!= 0){ //parent
-        
+        signal(SIGCHLD, SIG_IGN);
         //while(wait(&status) != pid);
         //pid_t result =  waitpid(pid, &status, 0); //blocking
         //kill(pid, 3);
@@ -94,6 +96,7 @@ void executeProgBackground(char* name, char** args){
        
         args[0] = name;
         rc =  execvp(args[0], args);
+        exit(0);
         
     }
 }
