@@ -91,15 +91,24 @@ void executeProgBackground(char* name, char** args){
          //signal(SIGCHLD, childHandler);
          //signal(SIGCHLD, SIG_IGN);
          //sleep(10);
-         pid = waitpid(pid, &status, WUNTRACED);
-         printf("waited\n");
+        //  pid = 
+        //  printf("waited\n");
 
     } else {  //child
-         execvp(args[0], args);
-         printf("invalid command\n");
-         exit(0);
-         //kill(pid, SIGINT);
-         //exit(0);
+        int pid2 = fork();
+        if (pid2 != 0) { //child
+            waitpid(pid, &status, WUNTRACED);
+            exit(0);
+
+        } else {//grandchild
+            execvp(args[0], args);
+            printf("invalid command\n");
+            exit(0);
+        }
+        
+        //kill(pid, SIGINT);
+        //exit(0);
+        
     }
 }
 
