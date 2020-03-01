@@ -19,7 +19,6 @@ int main(){
             free(cwd);
             cwd = (char*) malloc(count * sizeof(char));
         }
-        sleep(1); //prompt may not display if stdout being written to at the same time by another process
         printf("%s> ", cwd);
         fflush(stdout);
         int length = (count * 2) + 32; //this is arbitratry but I dont think it needs to be any bigger. If steve says otherwise can change]
