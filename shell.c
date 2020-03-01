@@ -12,6 +12,7 @@ int main(){
     int done = 0;
     //signal(SIGCHLD, SIG_IGN); //reap zombies automatically I think
     while (!done) { //program run loop, need to set up exit commands until then use keyboard interrupt to exit
+    
         int count = 1;
         char* cwd = (char*) malloc(count * sizeof(char));
         while(getcwd(cwd, count) == NULL){
@@ -73,7 +74,7 @@ int main(){
                 fName = tokens[j+1];
             }
         }
-        redirection(fName, task);
+        //redirection(fName, task);
     }   
 }
 
@@ -162,6 +163,25 @@ void parseArgs(char *buffer, char** args, int argsSize, int *nargs) {
 void tokenize(char *input, char** tokens, int maxTokens, int *nTokens){ // put the rewritten version of parseArgs here
 
 
+}
+
+char** truncateN(char** input, int size, int n) {
+    char** ret;
+    if (size - n < 0 ) {
+        ret = NULL;
+    } else {
+        ret = (char**) malloc(sizeof(char*) * (size - n));
+        for(int i = 0; i < (size - n); i++) {
+            ret[i] = (char*) malloc(sizeof(char) * strlen(input[i] + 1));
+            strcpy(ret[i], input[i]);
+        }
+        
+    }
+    for(int i = 0; i < size; i++) {
+        free(&(input[i]));
+    }
+    free(&input);
+    return ret;
 }
 
 void childHandler(pid_t pid) {
