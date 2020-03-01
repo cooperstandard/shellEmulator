@@ -60,8 +60,17 @@ int main(){
     }   
 }
 
-void redirection(char* filename, char* task) {
-    
+void redirection(char* fileName, char* task) {
+    FILE* file;
+
+    if(task == "r"){
+
+        file = freopen(fileName, task, stdin);
+    }
+    if(task == "w"){
+
+        file = freopen(fileName, task, stdout);
+    }
 }
 
 int executeProg(char* name, char** args){ //done fixed, now to make the background boy work
