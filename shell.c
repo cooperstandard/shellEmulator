@@ -57,24 +57,6 @@ int main(){
             executeProgBackground(tokens[0], tokens);
         }
         //free all malloced things that we dont want to persist
-
-        char* fName; //filename
-        char* task;  //input or output
-        int tLoc;   //task location for removing from tokens.
-        int fLoc;   //
-        for(int j = 0; j < sizeof(tokens); j++){
-            printf("entered for look");
-            if(strcmp(tokens[j], "<\0") == 0){
-                task = "r";             //reading from the input file
-                fName = tokens[j+1];    //next token is the file name
-            }
-
-            if(strcmp(tokens[j], ">\0") == 0){
-                task = "w";
-                fName = tokens[j+1];
-            }
-        }
-        //redirection(fName, task);
     }   
 }
 
