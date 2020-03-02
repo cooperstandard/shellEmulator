@@ -12,6 +12,7 @@ int main(){
     int done = 0;
     //signal(SIGCHLD, SIG_IGN); //reap zombies automatically I think
     while (!done) { //program run loop, need to set up exit commands until then use keyboard interrupt to exit
+    
         int count = 1;
         char* cwd = (char*) malloc(count * sizeof(char));
         while(getcwd(cwd, count) == NULL){
@@ -19,14 +20,13 @@ int main(){
             free(cwd);
             cwd = (char*) malloc(count * sizeof(char));
         }
-
         printf("%s> ", cwd);
         fflush(stdout);
         int length = (count * 2) + 32; //this is arbitratry but I dont think it needs to be any bigger. If steve says otherwise can change]
         char* input = (char*) malloc(length * sizeof(char));
         fgets(input, length + 1, stdin); //array is now formatted like "what was typed but always terminated with \n" followed by \0 until the array is full
         //printf("%s", input); // this just prints out what ^ read. once commands are working only print this if the input doesnt match a command
-        int maxTokens = 5; //maximum number of tokens (i.e. "mv -v ~ /" is 4 tokens"). five is probably enough but we can adjust if needed
+        int maxTokens = 10; //maximum number of tokens (i.e. "mv -v ~ /" is 4 tokens"). five is probably enough but we can adjust if needed
         char** tokens = (char**) malloc((maxTokens)*sizeof(char*));
         int nTokens = 1;
         
@@ -57,21 +57,27 @@ int main(){
             executeProgBackground(tokens[0], tokens);
         }
         //free all malloced things that we dont want to persist
+
+        char* fName; //filename
+        char* task;  //input or output
+        int tLoc;   //task location for removing from tokens.
+        int fLoc;   //
+        for(int j = 0; j < sizeof(tokens); j++){
+            printf("entered for look");
+            if(strcmp(tokens[j], "<\0") == 0){
+                task = "r";             //reading from the input file
+                fName = tokens[j+1];    //next token is the file name
+            }
+
+            if(strcmp(tokens[j], ">\0") == 0){
+                task = "w";
+                fName = tokens[j+1];
+            }
+        }
+        //redirection(fName, task);
     }   
 }
 
-void redirection(char* fileName, char* task) {
-    FILE* file;
-
-    if(task == "r"){
-
-        file = freopen(fileName, task, stdin);
-    }
-    if(task == "w"){
-
-        file = freopen(fileName, task, stdout);
-    }
-}
 
 int executeProg(char* name, char** args){ //done fixed, now to make the background boy work
     int status;
@@ -79,13 +85,13 @@ int executeProg(char* name, char** args){ //done fixed, now to make the backgrou
     int rc;
 
     if(pid!= 0){ //parent
-        
-        //while(wait(&status) != pid);
-        pid_t result =  waitpid(pid, &status, 0); //blocking
+        printf("parent ran");
+        while(wait(&status) != pid);
+        //pid_t result =  waitpid(pid, &status, 0); //blocking
         //kill(pid, 3);
-        //sleep(10);
+        sleep(10);
     } else {  //child
-       
+       printf("child ran");
         args[0] = name;
         rc =  execvp(args[0], args);
         exit(0);
@@ -145,6 +151,25 @@ void parseArgs(char *buffer, char** args, int argsSize, int *nargs) {
 void tokenize(char *input, char** tokens, int maxTokens, int *nTokens){ // put the rewritten version of parseArgs here
 
 
+}
+
+char** truncateN(char** input, int size, int n) {
+    char** ret;
+    if (size - n < 0 ) {
+        ret = NULL;
+    } else {
+        ret = (char**) malloc(sizeof(char*) * (size - n));
+        for(int i = 0; i < (size - n); i++) {
+            ret[i] = (char*) malloc(sizeof(char) * strlen(input[i] + 1));
+            strcpy(ret[i], input[i]);
+        }
+        
+    }
+    for(int i = 0; i < size; i++) {
+        free(&(input[i]));
+    }
+    //free(&input);
+    return ret;
 }
 
 void childHandler(pid_t pid) {

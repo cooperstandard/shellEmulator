@@ -13,5 +13,6 @@ int executeProg(char* name, char** args);
 void redirection(char* fileName, char* task);
 void executeProgBackground(char* name, char** args);
 void childHandler(pid_t pid);
+char** truncateN(char** input, int size, int n);
 
 //End Prototypes
