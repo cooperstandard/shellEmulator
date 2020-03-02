@@ -11,7 +11,11 @@
 int main(){
     int done = 0;
     //signal(SIGCHLD, SIG_IGN); //reap zombies automatically I think
+    char* saveIn = stdin;
+    char* saveOut = stdout;
     while (!done) { //program run loop, need to set up exit commands until then use keyboard interrupt to exit
+        freopen(saveIn, "r", stdin);
+        freopen(saveOut, "w", stdout);
         int count = 1;
         char* cwd = (char*) malloc(count * sizeof(char));
         while(getcwd(cwd, count) == NULL){
@@ -58,43 +62,67 @@ int main(){
         }
         //free all malloced things that we dont want to persist
 
-        char* fName; //filename
-        char* task;  //input or output
-        int tLoc;   //task location for removing from tokens.
-        int fLoc;   //
-        for(int j = 0; j < sizeof(tokens); j++){
-            printf("entered for look");
-            if(strcmp(tokens[j], "<\0") == 0){
-                task = "r";             //reading from the input file
-                fName = tokens[j+1];    //next token is the file name
-            }
+        // char* fName; //filename
+        // char* task;  //input or output
+        // int tLoc;   //task location for removing from tokens.
+        // int fLoc;   //
+        // for(int j = 0; j < sizeof(tokens); j++){
+        //     printf("entered for look");
+        //     if(strcmp(tokens[j], "<\0") == 0){
+        //         task = "r";             //reading from the input file
+        //         fName = tokens[j+1];    //next token is the file name
+        //     }
 
-            if(strcmp(tokens[j], ">\0") == 0){
-                task = "w";
-                fName = tokens[j+1];
-            }
-        }
-        redirection(fName, task);
+        //     if(strcmp(tokens[j], ">\0") == 0){
+        //         task = "w";
+        //         fName = tokens[j+1];
+        //     }
+        // }
+       
     }   
 }
-
-void redirection(char* fileName, char* task) {
-    FILE* file;
-
-    if(task == "r"){
-
-        file = freopen(fileName, task, stdin);
-    }
-    if(task == "w"){
-
-        file = freopen(fileName, task, stdout);
-    }
+int inputRedirct(char** args){
+    int val = 0;
+        if(strcmp(args[sizeof(args) - 2], "<\0") == 0){
+            val = 1;
+        }
+    return val;
 }
 
+int outputRedirct(char** args){
+    int val = 0;
+        if(strcmp(args[sizeof(args) - 2], ">\0") == 0){
+            val = 1;
+        }
+    return val;
+
+}
+// void redirection(char* fileName, char* task) {
+//     FILE* file;
+
+//     if(task == "r"){
+
+//         file = freopen(fileName, task, stdin);
+//     }
+//     if(task == "w"){
+
+//         file = freopen(fileName, task, stdout);
+//     }
+// }
+
 int executeProg(char* name, char** args){ //done fixed, now to make the background boy work
-    int status;
-    int pid = fork();
-    int rc;
+ 
+    if(inputRedirct(args)){
+        freopen((args[sizeof(args) - 1]), "r", stdin);
+    }
+    if(outputRedirct(args)){
+        freopen((args[sizeof(args) - 1]), "w", stdout);
+    }
+
+
+   int status;
+   int pid = fork();
+   int rc;
 
     if(pid!= 0){ //parent
         
@@ -105,7 +133,7 @@ int executeProg(char* name, char** args){ //done fixed, now to make the backgrou
     } else {  //child
        
         args[0] = name;
-        rc =  execvp(args[0], args);
+        execvp(args[0], args);
         exit(0);
         
     }
@@ -113,6 +141,15 @@ int executeProg(char* name, char** args){ //done fixed, now to make the backgrou
 }
 
 void executeProgBackground(char* name, char** args){
+
+    if(inputRedirct(args)){
+        freopen((args[sizeof(args) - 1]), "r", stdin);
+    }
+    if(outputRedirct(args)){
+        freopen((args[sizeof(args) - 1]), "w", stdout);
+    }
+
+
     int status;
     int pid = fork();
     int rc;
