@@ -61,25 +61,23 @@ int main(){
 }
 
 
-int executeProg(char* name, char** args){ //done fixed, now to make the background boy work
+void executeProg(char* name, char** args){ //done fixed, now to make the background boy work
     int status;
     int pid = fork();
-    int rc;
 
     if(pid!= 0){ //parent
         printf("parent ran");
         while(wait(&status) != pid);
         //pid_t result =  waitpid(pid, &status, 0); //blocking
         //kill(pid, 3);
-        sleep(10);
+        //sleep(10);
     } else {  //child
        printf("child ran");
-        args[0] = name;
-        rc =  execvp(args[0], args);
+        execvp(args[0], args);
         exit(0);
         
     }
-    return rc;
+    
 }
 
 void executeProgBackground(char* name, char** args){
@@ -90,9 +88,7 @@ void executeProgBackground(char* name, char** args){
     if(pid!= 0){ //parent
         signal(SIGCHLD, SIG_IGN);
     } else {  //child
-       
-        args[0] = name;
-        rc =  execvp(args[0], args);
+        execvp(args[0], args);
         exit(0);
         
     }
