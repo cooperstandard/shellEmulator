@@ -78,18 +78,6 @@ int main(){
     }   
 }
 
-void redirection(char* fileName, char* task) {
-    FILE* file;
-
-    if(task == "r"){
-
-        file = freopen(fileName, task, stdin);
-    }
-    if(task == "w"){
-
-        file = freopen(fileName, task, stdout);
-    }
-}
 
 int executeProg(char* name, char** args){ //done fixed, now to make the background boy work
     int status;
@@ -97,13 +85,13 @@ int executeProg(char* name, char** args){ //done fixed, now to make the backgrou
     int rc;
 
     if(pid!= 0){ //parent
-        
+        printf("parent ran");
         while(wait(&status) != pid);
         //pid_t result =  waitpid(pid, &status, 0); //blocking
         //kill(pid, 3);
         //sleep(10);
     } else {  //child
-       
+       printf("child ran");
         args[0] = name;
         rc =  execvp(args[0], args);
         exit(0);
