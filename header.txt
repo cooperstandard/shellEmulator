@@ -1,0 +1,7 @@
+//Project 2 Cover File
+Parse Args works.
+The Basic shell is implemented.
+Execute Progams and Execute background programs works
+The Helper methods for input/output redirection work
+but the method itself doesn't work
+Cooper Standard and Henry Jaffray worked together
