@@ -240,8 +240,22 @@ void tokenize(char *input, char** tokens, int maxTokens, int *nTokens){ // put t
 
 }
 
-void childHandler(pid_t pid) {
-    wait(NULL);
-
+char** truncateN(char** input, int size, int n) {
+    char** ret;
+    if (size - n < 0 ) {
+        ret = NULL;
+    } else {
+        ret = (char**) malloc(sizeof(char*) * (size - n));
+        for(int i = 0; i < (size - n); i++) {
+            ret[i] = (char*) malloc(sizeof(char) * strlen(input[i] + 1));
+            strcpy(ret[i], input[i]);
+        }
+        
+    }
+    for(int i = 0; i < size; i++) {
+        free(&(input[i]));
+    }
+    //free(&input);
+    return ret;
 }
 
