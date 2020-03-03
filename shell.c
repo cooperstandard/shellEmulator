@@ -34,7 +34,7 @@ int main(){
         char* input = (char*) malloc(length * sizeof(char));
         fgets(input, length + 1, stdin); //array is now formatted like "what was typed but always terminated with \n" followed by \0 until the array is full
         //printf("%s", input); // this just prints out what ^ read. once commands are working only print this if the input doesnt match a command
-        int maxTokens = 5; //maximum number of tokens (i.e. "mv -v ~ /" is 4 tokens"). five is probably enough but we can adjust if needed
+        int maxTokens = 10; //maximum number of tokens (i.e. "mv -v ~ /" is 4 tokens"). five is probably enough but we can adjust if needed
         char** tokens = (char**) malloc((maxTokens)*sizeof(char*));
         int nTokens = 1;
         
@@ -111,70 +111,9 @@ int outputRedirect(char*** args){
     return count;
 
 }
-// void redirection(char* fileName, char* task) {
-//     FILE* file;
-
-//     if(task == "r"){
-
-//         file = freopen(fileName, task, stdin);
-//     }
-//     if(task == "w"){
-
-//         file = freopen(fileName, task, stdout);
-//     }
-// }
-
-int executeProg(char* name, char** args){ //done fixed, now to make the background boy work
-    FILE* fp;
-    printf("entered execute \n");
-    
-    if(inputRedirect(&args)){
-        freopen(args[sizeof(args) - 1], "r+", stdin);
-        //args = truncateN(args, (sizeof(args)), 2);
-        // freopen(fName, "r", stdin);
-        printf("input redirected \n");
-    }
-    else{
-        int val = outputRedirect(&args);
-        printf("val %d\n", val);
-        if(val > 0){
-
-        char* fileName = args[sizeof(args) - 1];    
-        freopen(fileName, "w+", stdout);
-        //fp =  freopen(args[sizeof(args) - 1], "w+", stdout);
-        printf("stream changed \n");
-        args[val] = NULL;
-        args[val + 1] = NULL;
-        printf("elements set to NULL\n");
-        // //printf("stream changed \n");
-        // if(sizeof(args) - 2 < 1){
-        //     args = NULL;
-        // } else {
-        //    // int n = sizeof(args)
-        //      char**  ret = (char**) malloc(sizeof(char*) * (val));
-        //     printf("%d size of args\n", (int)sizeof(args));
-        //     for(int i = 0; i < val; i++){
-        //          printf("%s\n",args[i]);
-        //         ret[i] = (char*) malloc(sizeof(char) * strlen(args[i] + 1));
-        //         //printf("ret malloced \n");
-        //         strcpy(ret[i], args[i]);
-        //         printf("string copied \n");
-        //     }
-        //     printf("%d size of array", ((int)sizeof(args)- 2));
-        //     //free(&args);
-        //     args = ret;
-        //     printf("new assignment \n");
-        // }
-        
-        
-       // args = truncateN(args, (sizeof(args)), 2);
-        printf("output redirected \n");
-        }
-        
-    }
-    
 
 
+int executeProg(char* name, char** args){
    int status;
    int pid = fork();
    int rc = 0;
@@ -189,7 +128,7 @@ int executeProg(char* name, char** args){ //done fixed, now to make the backgrou
        
         args[0] = name;
         execvp(args[0], args);
-        fclose(fp);
+        //fclose(fp);
         exit(0);
         
     }
@@ -198,12 +137,6 @@ int executeProg(char* name, char** args){ //done fixed, now to make the backgrou
 
 void executeProgBackground(char* name, char** args){
     printf("entered background exe \n");
-    // if(inputRedirect(args)){
-    //     freopen((args[sizeof(args) - 1]), "r", stdin);
-    // }
-    // if(outputRedirect(args)){
-    //     freopen((args[sizeof(args) - 1]), "w", stdout);
-    // }
 
 
     int status;
