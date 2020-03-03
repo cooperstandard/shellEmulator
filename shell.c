@@ -11,11 +11,15 @@
 int main(){
     int done = 0;
     //signal(SIGCHLD, SIG_IGN); //reap zombies automatically I think
-    char* saveIn = stdin;
-    char* saveOut = stdout;
+    // char* saveIn = stdin;
+    // char* saveOut = stdout;
+    // freopen(saveIn, "r", stdin);
+    // freopen(saveOut, "w", stdout);
     while (!done) { //program run loop, need to set up exit commands until then use keyboard interrupt to exit
-        freopen(saveIn, "r", stdin);
-        freopen(saveOut, "w", stdout);
+        // fclose(stdin);
+        // fclose(stdout);
+        
+        printf("opened streams \n");
         int count = 1;
         char* cwd = (char*) malloc(count * sizeof(char));
         while(getcwd(cwd, count) == NULL){
@@ -40,6 +44,7 @@ int main(){
 
         int background;
         parseArgs(input, tokens, maxTokens, &nTokens);
+        printf("ParseArgs complete \n");
         if (strcmp(tokens[nTokens - 1], "&\0") == 0) {
             background = 1;
             strcpy(tokens[nTokens - 1], "\0"); //don't want to pass the & as an arguement
@@ -81,19 +86,42 @@ int main(){
        
     }   
 }
-int inputRedirct(char** args){
+int inputRedirect(char** args){
+    printf("entered the inputredirct \n");
+    int count = 0;
     int val = 0;
-        if(strcmp(args[sizeof(args) - 2], "<\0") == 0){
+    char* fName;
+    while(count < sizeof(args) && args[count] != NULL){
+        printf("entered 1st while loop \n");
+        printf("%s argument \n", args[count]);
+        if(strcmp(args[count], "<\0") == 0){
+            printf("found input \n");
             val = 1;
+            fName = args[count + 1];
+            freopen(fName, "r", stdin);
+            
         }
+     count++;   
+    }        
     return val;
 }
 
-int outputRedirct(char** args){
+int outputRedirect(char** args){
+    printf("entered the outputredirct \n");
+    int count = 0;
     int val = 0;
-        if(strcmp(args[sizeof(args) - 2], ">\0") == 0){
+    char* fName;
+    while(count < sizeof(args) && args[count] != NULL){
+        printf("%s argument \n", args[count]);
+        if(strcmp(args[count], ">\0") == 0){
+            printf("found output \n");
             val = 1;
+            fName = args[count + 1];
+            freopen(fName, "w+", stdout);
+            
         }
+     count++;   
+    }      
     return val;
 
 }
@@ -111,23 +139,33 @@ int outputRedirct(char** args){
 // }
 
 int executeProg(char* name, char** args){ //done fixed, now to make the background boy work
+    printf("entered execute \n");
+    if(inputRedirect(args)){
+        // printf("entered input if statement \n");
+        // char* fName = args[ - 1];
+        // freopen(fName, "r", stdin);
+        printf("input redirected \n");
+    }
+    else{
+    
+        if(outputRedirect(args)){
+        // char* fileName = args[sizeof(args) - 1];    
+        // freopen(fileName, "w", stdout);
+        printf("output redirected \n");
+        }
+
+    }
  
-    if(inputRedirct(args)){
-        freopen((args[sizeof(args) - 1]), "r", stdin);
-    }
-    if(outputRedirct(args)){
-        freopen((args[sizeof(args) - 1]), "w", stdout);
-    }
 
 
    int status;
    int pid = fork();
-   int rc;
+   int rc = 0;
 
     if(pid!= 0){ //parent
         
-        //while(wait(&status) != pid);
-        pid_t result =  waitpid(pid, &status, 0); //blocking
+        while(wait(&status) != pid);
+       // pid_t result =  waitpid(pid, &status, 0); //blocking
         //kill(pid, 3);
         //sleep(10);
     } else {  //child
@@ -141,13 +179,13 @@ int executeProg(char* name, char** args){ //done fixed, now to make the backgrou
 }
 
 void executeProgBackground(char* name, char** args){
-
-    if(inputRedirct(args)){
-        freopen((args[sizeof(args) - 1]), "r", stdin);
-    }
-    if(outputRedirct(args)){
-        freopen((args[sizeof(args) - 1]), "w", stdout);
-    }
+    printf("entered background exe \n");
+    // if(inputRedirect(args)){
+    //     freopen((args[sizeof(args) - 1]), "r", stdin);
+    // }
+    // if(outputRedirect(args)){
+    //     freopen((args[sizeof(args) - 1]), "w", stdout);
+    // }
 
 
     int status;
